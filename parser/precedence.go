@@ -1,6 +1,8 @@
 package parser
 
-import "gks/monkey_intp/token"
+import (
+	"gks/monkey_intp/token"
+)
 
 const (
 	_ int = iota
@@ -22,4 +24,5 @@ var precedences = map[token.TokenType]int{
 	token.MINUS:    SUM,
 	token.SLASH:    PRODUCT,
 	token.ASTERISK: PRODUCT,
+	token.LPAREN:   CALL,
 }
