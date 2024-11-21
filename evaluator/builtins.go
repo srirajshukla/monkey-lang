@@ -1,6 +1,10 @@
 package evaluator
 
-import "gks/monkey_intp/object"
+import (
+	"bytes"
+	"fmt"
+	"gks/monkey_intp/object"
+)
 
 var builtins = map[string]*object.Builtin{
 	"len": &object.Builtin{
@@ -96,6 +100,27 @@ var builtins = map[string]*object.Builtin{
 			newElements[length] = args[1]
 
 			return &object.Array{Elements: newElements}
+		},
+	},
+	"puts": &object.Builtin{
+		Fn: func(args ...object.Object) object.Object {
+
+			for _, arg := range args {
+				fmt.Println(arg.Insepct())
+			}
+
+			return NULL
+		},
+	},
+	"join": &object.Builtin{
+		Fn: func(args ...object.Object) object.Object {
+			var out bytes.Buffer
+
+			for _, arg := range args {
+				out.WriteString(arg.Insepct())
+			}
+
+			return &object.String{Value: out.String()}
 		},
 	},
 }
