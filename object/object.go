@@ -18,6 +18,7 @@ const (
 	ERROR_OBJ = "ERROR"
 	FUNCTION_OBJ = "FUNCTION"
 	BUILTIN_OBJ = "BUILTIN"
+	ARRAY_OBJ = "ARRAY"
 )
 
 type Object interface {
@@ -116,6 +117,7 @@ func (f *Function) Insepct() string {
 	out.WriteString("fn (")
 	out.WriteString(strings.Join(params, ", "))
 	out.WriteString(") {\n")
+	out.WriteString(f.Body.String())
 	out.WriteString("\n}")
 
 	return out.String()
@@ -133,4 +135,28 @@ func (b *Builtin) Type() ObjectType {
 
 func (b *Builtin) Insepct() string {
 	return "builtin function"
+}
+
+type Array struct {
+	Elements []Object
+}
+
+func (a *Array) Type() ObjectType {
+	return ARRAY_OBJ
+}
+
+func (a *Array) Insepct() string {
+	var out bytes.Buffer
+
+	elements := []string{}
+
+	for _, e := range a.Elements {
+		elements = append(elements, e.Insepct())
+	}
+
+	out.WriteString("[")
+	out.WriteString(strings.Join(elements, ","))
+	out.WriteString("]")
+
+	return out.String()
 }
