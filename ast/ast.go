@@ -326,7 +326,7 @@ func (ce *CallExpression) String() string {
 }
 
 type ArrayLiteral struct {
-	Token token.Token
+	Token    token.Token
 	Elements []Expression
 }
 
@@ -352,7 +352,7 @@ func (al *ArrayLiteral) String() string {
 
 type IndexExpression struct {
 	Token token.Token
-	Left Expression
+	Left  Expression
 	Index Expression
 }
 
@@ -364,11 +364,11 @@ func (ie *IndexExpression) TokenLiteral() string {
 func (ie *IndexExpression) String() string {
 	var out bytes.Buffer
 
-    out.WriteString("(")
-    out.WriteString(ie.Left.String())
-    out.WriteString("[")
-    out.WriteString(ie.Index.String())
-    out.WriteString("])")
+	out.WriteString("(")
+	out.WriteString(ie.Left.String())
+	out.WriteString("[")
+	out.WriteString(ie.Index.String())
+	out.WriteString("])")
 
-    return out.String()
+	return out.String()
 }

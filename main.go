@@ -22,7 +22,7 @@ func main() {
 		user.Username)
 	fmt.Printf("Feel free to type in commands\n")
 
-	args := os.Args[1:] 
+	args := os.Args[1:]
 	fmt.Println("args = ", args)
 
 	if len(args) < 1 {
@@ -39,7 +39,7 @@ func main() {
 		}
 
 		file, err := os.ReadFile(args[1])
-				
+
 		if err != nil {
 			fmt.Printf("Error opening the file %s. Error: %v\n", args[1], err)
 			os.Exit(1)
@@ -51,7 +51,7 @@ func main() {
 
 		env := object.NewEnvironment()
 		evaluated := evaluator.Eval(program, env)
-	
+
 		if evaluated.Type() == object.ERROR_OBJ {
 			fmt.Println(evaluated)
 		}

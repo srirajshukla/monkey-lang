@@ -45,13 +45,14 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 
 	case *ast.BlockStatement:
 		return evalBlockStatement(node, env)
-		
+
 	case *ast.IfExpression:
 		return evalIfExpression(node, env)
 
 	case *ast.ReturnStatement:
 		val := Eval(node.ReturnValue, env)
 		return &object.ReturnValue{Value: val}
+
 	case *ast.LetStatement:
 		val := Eval(node.Value, env)
 		if isError(val) {
@@ -62,11 +63,13 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 
 	case *ast.Identifier:
 		return evalIdentifier(node, env)
+
 	case *ast.FunctionLiteral:
 		params := node.Parameters
 		body := node.Body
 
 		return &object.Function{Parameters: params, Env: env, Body: body}
+
 	case *ast.CallExpression:
 		function := Eval(node.Function, env)
 		if isError(function) {
@@ -79,6 +82,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		}
 
 		return applyFunction(function, args)
+
 	case *ast.ArrayLiteral:
 		elements := evalExpressions(node.Elements, env)
 
@@ -87,6 +91,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		}
 
 		return &object.Array{Elements: elements}
+
 	case *ast.IndexExpression:
 		left := Eval(node.Left, env)
 
@@ -102,15 +107,13 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return evalIndexExpression(left, index)
 	}
 
-
 	return nil
 }
-
 
 func evalProgram(program *ast.Program, env *object.Environment) object.Object {
 	var result object.Object
 
-	for _, statement := range program.Statements{
+	for _, statement := range program.Statements {
 		result = Eval(statement, env)
 
 		switch result := result.(type) {
@@ -192,7 +195,7 @@ func evalBangOperatorExpression(op object.Object) object.Object {
 
 func evalMinusPrefixOperatorExpression(right object.Object) object.Object {
 	if right.Type() != object.INTEJER_OBJ {
-		return newError("unknown operator: -%s", right.Type()) 
+		return newError("unknown operator: -%s", right.Type())
 	}
 
 	value := right.(*object.Integer).Value
@@ -214,7 +217,7 @@ func evalInfixExpression(operator string, left, right object.Object) object.Obje
 	case left.Type() != right.Type():
 		return newError("type mismatch: %s %s %s", left.Type(), operator, right.Type())
 	default:
-		return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type()) 
+		return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type())
 	}
 }
 
@@ -240,7 +243,7 @@ func evalIntegerInfixExpression(operator string, left, right object.Object) obje
 	case "!=":
 		return nativeBoolToBooleanObject(leftVal != rightVal)
 	default:
-		return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type()) 
+		return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type())
 	}
 }
 
@@ -260,7 +263,7 @@ func evalStringInfixExpression(operator string, left, right object.Object) objec
 	case "!=":
 		return nativeBoolToBooleanObject(leftVal != rightVal)
 	default:
-		return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type()) 
+		return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type())
 	}
 }
 
@@ -279,15 +282,15 @@ func evalStringIntegerInfixExpression(operator string, left, right object.Object
 	ans := ""
 	for _ = range rightVal {
 		ans += leftVal
-	}	
+	}
 
-	return &object.String{Value: ans} 
+	return &object.String{Value: ans}
 }
 
 func evalIfExpression(node *ast.IfExpression, env *object.Environment) object.Object {
 	condition := Eval(node.Condition, env)
 
-	if isTruthy(condition){
+	if isTruthy(condition) {
 		return Eval(node.Consequence, env)
 	} else if node.Alternative != nil {
 		return Eval(node.Alternative, env)
@@ -345,7 +348,7 @@ func unwrapReturnvalue(obj object.Object) object.Object {
 
 func evalIndexExpression(left, index object.Object) object.Object {
 	switch {
-	case left.Type() == object.ARRAY_OBJ && index.Type() == object.INTEJER_OBJ :
+	case left.Type() == object.ARRAY_OBJ && index.Type() == object.INTEJER_OBJ:
 		return evalArrayIndexExpression(left, index)
 	default:
 		return newError("index operator not supported: %s", left.Type())
@@ -365,7 +368,7 @@ func evalArrayIndexExpression(left, index object.Object) object.Object {
 	return arrayObj.Elements[indexObj]
 }
 
-func isTruthy(obj object.Object) bool{
+func isTruthy(obj object.Object) bool {
 	switch obj {
 	case NULL:
 		return false
@@ -375,9 +378,8 @@ func isTruthy(obj object.Object) bool{
 		return true
 	default:
 		return true
-	}	
+	}
 }
-
 
 func isError(node object.Object) bool {
 	return node.Type() == object.ERROR_OBJ
