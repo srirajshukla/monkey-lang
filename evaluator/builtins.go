@@ -102,6 +102,88 @@ var builtins = map[string]*object.Builtin{
 			return &object.Array{Elements: newElements}
 		},
 	},
+	"put": &object.Builtin{
+		Fn: func(args ...object.Object) object.Object {
+			if len(args) != 3 {
+				return newError("wrong number of arguments. got=%d, want=3", len(args))
+			}
+
+			if args[0].Type() != object.HASH_OBJ {
+				return newError("first argument to `put` must be Hash Map, got %s", args[0].Type())
+			}
+
+			// Get the original hashmap
+			hashmap := args[0].(*object.Hash)
+
+			// Get the key to insert and check if it's correct
+			keyObj, ok := args[1].(object.Hashable)
+
+			if !ok {
+				return newError("unusable as hash key: %s", args[1].Type())
+			}
+
+			// create a new map and copy all the original values
+			newMap := make(map[object.HashKey]object.HashPair)
+
+			for k, v := range hashmap.Pairs {
+				newMap[k] = v
+			}
+
+			// assign the new value to new map
+			value := object.HashPair{Key: args[1], Value: args[2]}
+			newMap[keyObj.HashKey()] = value
+
+			return &object.Hash{Pairs: newMap}
+		},
+	},
+	"remove": &object.Builtin{
+		Fn: func(args ...object.Object) object.Object {
+			if len(args) != 2 {
+				return newError("wrong number of arguments. got=%d, want=2", len(args))
+			}
+
+			switch obj := args[0].(type) {
+			case *object.Array:
+				length := len(obj.Elements)
+
+				idxToRemove, ok := args[1].(*object.Integer)
+
+				if !ok {
+					return newError("index to remove in array must be integer, got %s", args[1].Type())
+				}
+
+				if int(idxToRemove.Value) >= length || idxToRemove.Value < 0 {
+					return newError("invalid index to remove from array")	
+				}
+
+				newArray := make([]object.Object, 0)
+				newArray = append(newArray, obj.Elements[:idxToRemove.Value]...)
+				newArray = append(newArray, obj.Elements[idxToRemove.Value+1:]...)
+
+				return &object.Array{Elements: newArray}
+
+			case *object.Hash:
+				keyToRemove, ok := args[1].(object.Hashable)
+
+				if !ok {
+					return newError("key to remove in hashmap must be hashable, got = %s", args[1].Type())
+				}
+				// create a new map and copy all the original values
+				newMap := make(map[object.HashKey]object.HashPair)
+
+				for k, v := range obj.Pairs {
+					newMap[k] = v
+				}
+
+				// delete the value with key equals keyToRemove
+				delete(newMap, keyToRemove.HashKey())
+
+				return &object.Hash{Pairs: newMap}
+			default:
+				return newError("first argument to `push` must be ARRAY or HASH MAP, got %s", args[0].Type())
+			}
+		},
+	},
 	"puts": &object.Builtin{
 		Fn: func(args ...object.Object) object.Object {
 
