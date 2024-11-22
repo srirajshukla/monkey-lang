@@ -153,7 +153,7 @@ var builtins = map[string]*object.Builtin{
 				}
 
 				if int(idxToRemove.Value) >= length || idxToRemove.Value < 0 {
-					return newError("invalid index to remove from array")	
+					return newError("invalid index to remove from array")
 				}
 
 				newArray := make([]object.Object, 0)
@@ -203,6 +203,74 @@ var builtins = map[string]*object.Builtin{
 			}
 
 			return &object.String{Value: out.String()}
+		},
+	},
+	"rem": &object.Builtin{
+		Fn: func(args ...object.Object) object.Object {
+			if len(args) != 2 {
+				return newError("wrong number of arguments. got=%d, want=2", len(args))
+			}
+
+			if args[0].Type() != object.INTEJER_OBJ {
+				return newError("first argument to `rem` must be NUMBER, got %s", args[0].Type())
+			}
+
+			if args[1].Type() != object.INTEJER_OBJ {
+				return newError("second argument to `rem` must be NUMBER, got %s", args[0].Type())
+			}
+
+			val1 := args[0].(*object.Integer)
+			val2 := args[1].(*object.Integer)
+
+			return &object.Integer{Value: int64(val1.Value) % int64(val2.Value)}
+		},
+	},
+	"and": &object.Builtin{
+		Fn: func(args ...object.Object) object.Object {
+			if len(args) != 2 {
+				return newError("wrong number of arguments. got=%d, want=2", len(args))
+			}
+
+			if args[0].Type() != object.BOOLEAN_OBJ {
+				return newError("first argument to `and` must be BOOLEAN, got %s", args[0].Type())
+			}
+
+			if args[1].Type() != object.BOOLEAN_OBJ {
+				return newError("second argument to `and` must be BOOLEAN, got %s", args[0].Type())
+			}
+
+			val1 := args[0].(*object.Boolean)
+			val2 := args[1].(*object.Boolean)
+
+			if val1.Value && val2.Value {
+				return TRUE
+			} else {
+				return FALSE
+			}
+		},
+	},
+	"eq": &object.Builtin{
+		Fn: func(args ...object.Object) object.Object {
+			if len(args) != 2 {
+				return newError("wrong number of arguments. got=%d, want=2", len(args))
+			}
+
+			if args[0].Type() != object.STRING_OBJ {
+				return newError("first argument to `eq` must be STRING, got %s", args[0].Type())
+			}
+
+			if args[1].Type() != object.STRING_OBJ {
+				return newError("second argument to `eq` must be STRING, got %s", args[0].Type())
+			}
+
+			val1 := args[0].(*object.String)
+			val2 := args[1].(*object.String)
+
+			if val1.Value == val2.Value {
+				return TRUE
+			} else {
+				return FALSE
+			}
 		},
 	},
 }
