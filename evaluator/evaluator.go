@@ -36,11 +36,20 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 
 	case *ast.PrefixExpression:
 		right := Eval(node.Right, env)
+		if isError(right) {
+			return right
+		}
 		return evalPrefixExpression(node.Operator, right)
 
 	case *ast.InfixExpression:
 		left := Eval(node.Left, env)
+		if isError(left) {
+			return left
+		}
 		right := Eval(node.Right, env)
+		if isError(right) {
+			return right
+		}
 		return evalInfixExpression(node.Operator, left, right)
 
 	case *ast.BlockStatement:
@@ -51,6 +60,9 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 
 	case *ast.ReturnStatement:
 		val := Eval(node.ReturnValue, env)
+		if isError(val) {
+			return val
+		}
 		return &object.ReturnValue{Value: val}
 
 	case *ast.LetStatement:
@@ -136,12 +148,11 @@ func evalBlockStatement(block *ast.BlockStatement, env *object.Environment) obje
 	for _, statement := range block.Statements {
 		result = Eval(statement, env)
 
-		if result != nil && result.Type() == object.RETURN_VALUE_OBJ {
+		if result != nil {
 			rt := result.Type()
 			if rt == object.RETURN_VALUE_OBJ || rt == object.ERROR_OBJ {
 				return result
 			}
-			return result
 		}
 	}
 
@@ -293,6 +304,10 @@ func evalStringIntegerInfixExpression(operator string, left, right object.Object
 func evalIfExpression(node *ast.IfExpression, env *object.Environment) object.Object {
 	condition := Eval(node.Condition, env)
 
+	if isError(condition) {
+		return condition
+	}
+
 	if isTruthy(condition) {
 		return Eval(node.Consequence, env)
 	} else if node.Alternative != nil {
@@ -343,7 +358,7 @@ func extendFunctionEnv(fn *object.Function, args []object.Object) *object.Enviro
 
 func unwrapReturnvalue(obj object.Object) object.Object {
 	if returnValue, ok := obj.(*object.ReturnValue); ok {
-		return returnValue
+		return returnValue.Value
 	}
 
 	return obj
