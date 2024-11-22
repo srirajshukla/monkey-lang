@@ -188,7 +188,7 @@ var builtins = map[string]*object.Builtin{
 		Fn: func(args ...object.Object) object.Object {
 
 			for _, arg := range args {
-				fmt.Println(arg.Insepct())
+				fmt.Println(arg.Inspect())
 			}
 
 			return NULL
@@ -199,7 +199,7 @@ var builtins = map[string]*object.Builtin{
 			var out bytes.Buffer
 
 			for _, arg := range args {
-				out.WriteString(arg.Insepct())
+				out.WriteString(arg.Inspect())
 			}
 
 			return &object.String{Value: out.String()}

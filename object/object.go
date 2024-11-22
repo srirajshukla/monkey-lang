@@ -15,7 +15,7 @@ const (
 	STRING_OBJ       = "STRING"
 	BOOLEAN_OBJ      = "BOOLEAN"
 	NULL_OBJ         = "NULL"
-	RETURN_VALUE_OBJ = "RETRUN_VALUE"
+	RETURN_VALUE_OBJ = "RETURN_VALUE"
 	ERROR_OBJ        = "ERROR"
 	FUNCTION_OBJ     = "FUNCTION"
 	BUILTIN_OBJ      = "BUILTIN"
@@ -25,14 +25,14 @@ const (
 
 type Object interface {
 	Type() ObjectType
-	Insepct() string
+	Inspect() string
 }
 
 type Integer struct {
 	Value int64
 }
 
-func (i *Integer) Insepct() string {
+func (i *Integer) Inspect() string {
 	return fmt.Sprintf("%d", i.Value)
 }
 
@@ -48,7 +48,7 @@ func (s *String) Type() ObjectType {
 	return STRING_OBJ
 }
 
-func (s *String) Insepct() string {
+func (s *String) Inspect() string {
 	return s.Value
 }
 
@@ -56,7 +56,7 @@ type Boolean struct {
 	Value bool
 }
 
-func (b *Boolean) Insepct() string {
+func (b *Boolean) Inspect() string {
 	return fmt.Sprintf("%t", b.Value)
 }
 
@@ -66,7 +66,7 @@ func (b *Boolean) Type() ObjectType {
 
 type Null struct{}
 
-func (n *Null) Insepct() string {
+func (n *Null) Inspect() string {
 	return "null"
 }
 
@@ -82,8 +82,8 @@ func (rv *ReturnValue) Type() ObjectType {
 	return RETURN_VALUE_OBJ
 }
 
-func (rv *ReturnValue) Insepct() string {
-	return rv.Value.Insepct()
+func (rv *ReturnValue) Inspect() string {
+	return rv.Value.Inspect()
 }
 
 type Error struct {
@@ -94,7 +94,7 @@ func (e *Error) Type() ObjectType {
 	return ERROR_OBJ
 }
 
-func (e *Error) Insepct() string {
+func (e *Error) Inspect() string {
 	return "ERROR: " + e.Message
 }
 
@@ -108,7 +108,7 @@ func (f *Function) Type() ObjectType {
 	return FUNCTION_OBJ
 }
 
-func (f *Function) Insepct() string {
+func (f *Function) Inspect() string {
 	var out bytes.Buffer
 
 	params := []string{}
@@ -135,7 +135,7 @@ func (b *Builtin) Type() ObjectType {
 	return BUILTIN_OBJ
 }
 
-func (b *Builtin) Insepct() string {
+func (b *Builtin) Inspect() string {
 	return "builtin function"
 }
 
@@ -147,13 +147,13 @@ func (a *Array) Type() ObjectType {
 	return ARRAY_OBJ
 }
 
-func (a *Array) Insepct() string {
+func (a *Array) Inspect() string {
 	var out bytes.Buffer
 
 	elements := []string{}
 
 	for _, e := range a.Elements {
-		elements = append(elements, e.Insepct())
+		elements = append(elements, e.Inspect())
 	}
 
 	out.WriteString("[")
@@ -208,12 +208,12 @@ func (h *Hash) Type() ObjectType {
 	return HASH_OBJ
 }
 
-func (h *Hash) Insepct() string {
+func (h *Hash) Inspect() string {
 	var out bytes.Buffer
 
 	pairs := []string{}
 	for _, pair := range h.Pairs {
-		pairs = append(pairs, fmt.Sprintf("%s: %s", pair.Key.Insepct(), pair.Value.Insepct()))
+		pairs = append(pairs, fmt.Sprintf("%s: %s", pair.Key.Inspect(), pair.Value.Inspect()))
 	}
 
 	out.WriteString("{")
