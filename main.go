@@ -8,18 +8,10 @@ import (
 	"gks/monkey_intp/parser"
 	"gks/monkey_intp/repl"
 	"os"
-	"os/user"
 )
 
 func main() {
-	user, err := user.Current()
-
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("Hello %s! This is the Monkey programming language REPL!\n",
-		user.Username)
+	fmt.Printf("Hello! This is the Monkey programming language REPL!\n")
 	fmt.Printf("Feel free to type in commands\n")
 
 	args := os.Args[1:]
