@@ -90,7 +90,6 @@ func isMacroCall(exp *ast.CallExpression, env *object.Environment) (*object.Macr
 	return macro, true
 }
 
-
 func quotedArgs(exp *ast.CallExpression) []*object.Quote {
 	args := []*object.Quote{}
 

@@ -2,10 +2,6 @@ package main
 
 import (
 	"fmt"
-	"gks/monkey_intp/evaluator"
-	"gks/monkey_intp/lexer"
-	"gks/monkey_intp/object"
-	"gks/monkey_intp/parser"
 	"gks/monkey_intp/repl"
 	"os"
 )
@@ -37,16 +33,9 @@ func main() {
 			os.Exit(1)
 		}
 
-		lex := lexer.NewLexer(string(file))
-		parser := parser.NewParser(lex)
-		program := parser.ParseProgram()
+		evaluatedValue := repl.EvaluateProgramFromString(string(file))
+		fmt.Println(evaluatedValue)
 
-		env := object.NewEnvironment()
-		evaluated := evaluator.Eval(program, env)
-
-		if evaluated.Type() == object.ERROR_OBJ {
-			fmt.Println(evaluated)
-		}
 	}
 
 }

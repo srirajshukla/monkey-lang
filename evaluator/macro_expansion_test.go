@@ -72,8 +72,8 @@ func testParseProgram(input string) *ast.Program {
 }
 
 func TestExpandMacros(t *testing.T) {
-	tests := []struct{
-		input string
+	tests := []struct {
+		input    string
 		expected string
 	}{
 		{
