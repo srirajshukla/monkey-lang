@@ -86,7 +86,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		// Short circuit the call expression when
 		// we are quoting
 		if node.Function.TokenLiteral() == "quote" {
-			return quote(node.Arguments[0])
+			return quote(node.Arguments[0], env)
 		}
 
 		function := Eval(node.Function, env)

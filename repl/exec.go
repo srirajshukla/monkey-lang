@@ -13,11 +13,10 @@ func EvaluateProgramFromString(prog string) string {
 	program := parser.ParseProgram()
 
 	env := object.NewEnvironment()
-	
 	evaluated := evaluator.Eval(program, env)
 
 	if evaluated.Type() == object.ERROR_OBJ {
-		return "Error: " + evaluated.Inspect()	
+		return "Error: " + evaluated.Inspect()
 	}
 
 	return evaluated.Inspect()
