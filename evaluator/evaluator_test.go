@@ -1,6 +1,7 @@
 package evaluator
 
 import (
+	"gks/monkey_intp/ast"
 	"gks/monkey_intp/lexer"
 	"gks/monkey_intp/object"
 	"gks/monkey_intp/parser"
@@ -589,5 +590,22 @@ func TestHashIndexExpressions(t *testing.T) {
 		} else {
 			testNullObject(t, evaluated)
 		}
+	}
+}
+
+func TestEval_ErrorExpressionReturnsObjectError(t *testing.T) {
+	node := &ast.ErrorExpression{
+		Message: "macro error: something went wrong",
+	}
+
+	result := Eval(node, nil)
+	errObj, ok := result.(*object.Error)
+	if !ok {
+		t.Fatalf("expected *object.Error, got %T", result)
+	}
+
+	expected := "macro error: something went wrong"
+	if errObj.Message != expected {
+		t.Errorf("unexpected error message. got=%q, want=%q", errObj.Message, expected)
 	}
 }

@@ -2,6 +2,7 @@ package ast
 
 import (
 	"bytes"
+	"fmt"
 	"gks/monkey_intp/token"
 	"strings"
 )
@@ -397,3 +398,11 @@ func (hl *HashLiteral) String() string {
 
 	return out.String()
 }
+
+type ErrorExpression struct {
+	Message string
+}
+
+func (ee *ErrorExpression) expressionNode()      {}
+func (ee *ErrorExpression) TokenLiteral() string { return "error" }
+func (ee *ErrorExpression) String() string       { return fmt.Sprintf("ERROR: %s", ee.Message) }

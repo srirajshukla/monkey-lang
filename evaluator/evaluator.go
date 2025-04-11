@@ -126,6 +126,9 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 
 	case *ast.HashLiteral:
 		return evalHashLiteral(node, env)
+
+	case *ast.ErrorExpression:
+		return &object.Error{Message: node.Message}
 	}
 
 	return nil
