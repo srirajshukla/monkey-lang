@@ -9,4 +9,5 @@ let unless =  macro(condition, consequence, alternative) {
     ); 
 };
 
-puts(unless(10>5, "not greater", "greater"));
+unless(10>5, puts("not greater"), puts("greater"));
+unless(10>50, puts("not greater"), puts("greater"));
