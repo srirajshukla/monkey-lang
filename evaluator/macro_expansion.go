@@ -3,6 +3,7 @@ package evaluator
 import (
 	"gks/monkey_intp/ast"
 	"gks/monkey_intp/object"
+	"slices"
 )
 
 func DefineMacros(program *ast.Program, env *object.Environment) {
@@ -17,7 +18,7 @@ func DefineMacros(program *ast.Program, env *object.Environment) {
 
 	for i := len(definitions) - 1; i >= 0; i-- {
 		defIdx := definitions[i]
-		program.Statements = append(program.Statements[:defIdx], program.Statements[defIdx+1:]...)
+		program.Statements = slices.Delete(program.Statements, defIdx, defIdx+1)
 	}
 }
 
